@@ -42,16 +42,26 @@ async function getAllRecords(callback) {
 
 
 
-const writeMarkdown = (city, details) =>{
-    const filepath = `./src/markdown/${city.toLowerCase()}.md`
-    var md = 
-    `---\nslug: /${city.toLowerCase()}\ntitle: ${city}\n---\n`
-    for(const type in details){
-        md = md.concat(`###${type}\n`)
-        details[type].map(res => md = md.concat(`-[${res.Name}](${res.Link})\n`))
-    }
-    
-    fs.writeFileSync(filepath, md)
+const writeMarkdown = async (city, details) =>{
+    return new Promise((resolveMd, rejectMd) =>{
+        try {
+            const filepath = `./src/markdown/${city.toLowerCase()}.md`
+            var md = 
+            `---\nslug: /${city.toLowerCase()}\ntitle: ${city}\n---\n`
+            for(const type in details){
+                md = md.concat(`###${type}\n`)
+                details[type].map(res => md = md.concat(`-[${res.Name}](${res.Link})\n`))
+            }
+            
+            fs.writeFileSync(filepath, md)
+            resolveMd()
+            return
+        }catch(e){
+            console.error(e)
+            rejectMd()
+            return
+        }
+    })
 }
 
 
@@ -62,7 +72,7 @@ async function main() {
 
     for(const city in sorted){
         sorted[city] = _.mapValues(_.groupBy(sorted[city], "Resource"), rList => rList.map(resource => _.omit(resource, "Resource")))
-        writeMarkdown(city, sorted[city])
+        await writeMarkdown(city, sorted[city])
     }
 }
 
