@@ -1,0 +1,15 @@
+{
+  "name": "pr-maker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "pr-maker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "airtable": "^0.8.1",
+    "octonode": "^0.9.5"
+  }
+}
