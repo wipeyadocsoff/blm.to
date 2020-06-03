@@ -72,14 +72,28 @@ async function makePr(slug, url) {
     // create a branch
     await repo.createRefAsync(`refs/heads/${branchName}`, master[0].object.sha);
 
+    // check if it exists already
+    const filename = `redirects/${sanitizedSlug}`;
+    let existing = null;
+    try {
+        existing = await repo.contentsAsync(filename, branchName);
+    } catch (err) {
+        if (err.statusCode !== 404) {
+            throw err;
+        }
+    }
+
     // create a new file
-    const title = `Link Request: ${slug} -> ${url}`;
-    await repo.createContentsAsync(
-        `redirects/${sanitizedSlug}`,
-        title,
-        `/${slug}    ${url}\n`,
-        branchName,
-    );
+    const dupeTag = existing ? '[DUPLICATE] ' : '';
+    const title = `${dupeTag}Link Request: ${slug} -> ${url}`;
+    const content = `/${slug}    ${url}\n`;
+    if (existing) {
+        await repo.updateContentsAsync(
+            filename, title, content, existing[0]['sha'], branchName);
+    } else {
+        await repo.createContentsAsync(
+            filename, title, content, branchName);
+    }
 
     // create pull request
     return await repo.prAsync({
