@@ -19,12 +19,9 @@ To build static pages
 npm run build
 ```
 
-## How to add redirects
-Redirects are stored in the `static/_redirects` file.
-
-They follow the format outlined here:
-https://docs.netlify.com/routing/redirects/#syntax-for-the-redirects-file
-
+## How to add re-directs
+Go to `blm.to/form` to add a new link to be shortened/re-direct
+You can view all proposed links at `blm.to/table`
 
 ## How to add pages
 Pages can be added by creating a Github-flavored markdown file in the `src/markdown` directory. Frontmatter block should be added as such:
