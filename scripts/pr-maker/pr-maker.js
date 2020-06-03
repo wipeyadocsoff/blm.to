@@ -4,6 +4,7 @@ const Airtable = require('airtable');
 
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
 const GITHUB_API_KEY = process.env.GITHUB_API_KEY;
+const PR_USERNAME = process.env.PR_USERNAME;
 
 const github = octonode.client(GITHUB_API_KEY);
 
@@ -100,7 +101,7 @@ async function makePr(slug, url) {
     return await repo.prAsync({
         title,
         body: 'This is an automated pull request.',
-        head: `illegalprime:${branchName}`,
+        head: `${PR_USERNAME}:${branchName}`,
         base: 'master',
         maintainer_can_modify: true,
     });
