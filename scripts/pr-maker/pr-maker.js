@@ -61,10 +61,10 @@ async function addPrToRecord(recordID, prLink) {
 }
 
 
-async function makePr(slug, url) {
+async function makePr(rawSlug, url) {
     // unique-ish branch name
-    const sanitizedSlug = slug.replace(/[^-a-z0-9_]/ig, '-');
-    const branchName = `link_req_${sanitizedSlug}_${Date.now()}`;
+    const slug = rawSlug.replace(/[^-a-z0-9]+/ig, '-');
+    const branchName = `link_req_${slug}_${Date.now()}`;
 
     const repo = github.repo(`${PR_USERNAME}/blm.to`);
     const master = await repo.refAsync('heads/master');
@@ -73,7 +73,7 @@ async function makePr(slug, url) {
     await repo.createRefAsync(`refs/heads/${branchName}`, master[0].object.sha);
 
     // check if it exists already
-    const filename = `redirects/${sanitizedSlug}`;
+    const filename = `redirects/${slug}`;
     let existing = null;
     try {
         existing = await repo.contentsAsync(filename, branchName);
@@ -98,7 +98,11 @@ async function makePr(slug, url) {
     // create pull request
     return await repo.prAsync({
         title,
-        body: 'This is an automated pull request.',
+        body: [
+            'This is an automated message.', '',
+            'A request has been submitted to shorten:',
+            `${url} to https://blm.to/${slug}`,
+        ].join('\n'),
         head: `${PR_USERNAME}:${branchName}`,
         base: 'master',
         maintainer_can_modify: true,
