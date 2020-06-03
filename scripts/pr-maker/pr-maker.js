@@ -79,14 +79,19 @@ async function makePr(slug, url) {
         redirects[0]['content'],
         redirects[0]['encoding'],
     ).toString('utf8');
-    const updated = `${text}\n/${slug} ${url}`;
+
+    // check if this already exists
+    const duplicate = !! text.match(RegExp(`^/${slug}\\s`, 'm'));
 
     // commit
-    const title = `Link Request: ${slug} -> ${url}`;
+    let title = `Link Request: ${slug} -> ${url}`;
+    if (duplicate) {
+        title = '[DUPLICATE] ' + title;
+    }
     await repo.updateContentsAsync(
         'static/_redirects',
         title,
-        updated,
+        `${text}\n/${slug} ${url}`,
         redirects[0]['sha'],
         branchName,
     );
