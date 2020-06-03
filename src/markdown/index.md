@@ -1,6 +1,6 @@
 ---
 slug: "/"
-title: "blt.to"
+title: "blm.to"
 date: "06-01-2020"
 ---
 # Home
