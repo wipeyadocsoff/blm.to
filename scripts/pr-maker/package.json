@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "airtable": "^0.8.1",
-    "octonode": "^0.9.5"
+    "octonode": "^0.9.5",
+    "yaml": "^1.10.0"
   }
 }
