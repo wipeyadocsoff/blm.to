@@ -63,7 +63,7 @@ async function addPrToRecord(recordID, prLink) {
 
 async function makePr(slug, url) {
     // unique-ish branch name
-    const sanitizedSlug = slug.replace(/[^-a-z0-9_]/i, '-');
+    const sanitizedSlug = slug.replace(/[^-a-z0-9_]/ig, '-');
     const branchName = `link_req_${sanitizedSlug}_${Date.now()}`;
 
     const repo = github.repo(`${PR_USERNAME}/blm.to`);
