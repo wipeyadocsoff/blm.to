@@ -63,39 +63,37 @@ async function addPrToRecord(recordID, prLink) {
 
 async function makePr(slug, url) {
     // unique-ish branch name
-    const sanitizedBranch = slug.replace(/[^-a-z0-9_]/i, '-');
-    const branchName = `${sanitizedBranch}_${Date.now()}`;
+    const sanitizedSlug = slug.replace(/[^-a-z0-9_]/i, '-');
+    const branchName = `link_req_${sanitizedSlug}_${Date.now()}`;
 
-    const repo = github.repo('wipeyadocsoff/blm.to');
+    const repo = github.repo(`${PR_USERNAME}/blm.to`);
     const master = await repo.refAsync('heads/master');
 
     // create a branch
     await repo.createRefAsync(`refs/heads/${branchName}`, master[0].object.sha);
 
-    // get current file contents
-    redirects = await repo.contentsAsync('static/_redirects', branchName);
-
-    // append to contents
-    const text = Buffer.from(
-        redirects[0]['content'],
-        redirects[0]['encoding'],
-    ).toString('utf8');
-
-    // check if this already exists
-    const duplicate = !! text.match(RegExp(`^/${slug}\\s`, 'm'));
-
-    // commit
-    let title = `Link Request: ${slug} -> ${url}`;
-    if (duplicate) {
-        title = '[DUPLICATE] ' + title;
+    // check if it exists already
+    const filename = `redirects/${sanitizedSlug}`;
+    let existing = null;
+    try {
+        existing = await repo.contentsAsync(filename, branchName);
+    } catch (err) {
+        if (err.statusCode !== 404) {
+            throw err;
+        }
     }
-    await repo.updateContentsAsync(
-        'static/_redirects',
-        title,
-        `${text}\n/${slug} ${url}`,
-        redirects[0]['sha'],
-        branchName,
-    );
+
+    // create a new file
+    const dupeTag = existing ? '[DUPLICATE] ' : '';
+    const title = `${dupeTag}Link Request: ${slug} -> ${url}`;
+    const content = `/${slug}    ${url}\n`;
+    if (existing) {
+        await repo.updateContentsAsync(
+            filename, title, content, existing[0]['sha'], branchName);
+    } else {
+        await repo.createContentsAsync(
+            filename, title, content, branchName);
+    }
 
     // create pull request
     return await repo.prAsync({
