@@ -63,37 +63,21 @@ async function addPrToRecord(recordID, prLink) {
 
 async function makePr(slug, url) {
     // unique-ish branch name
-    const sanitizedBranch = slug.replace(/[^-a-z0-9_]/i, '-');
-    const branchName = `${sanitizedBranch}_${Date.now()}`;
+    const sanitizedSlug = slug.replace(/[^-a-z0-9_]/i, '-');
+    const branchName = `link_req_${sanitizedSlug}_${Date.now()}`;
 
-    const repo = github.repo('wipeyadocsoff/blm.to');
+    const repo = github.repo(`${PR_USERNAME}/blm.to`);
     const master = await repo.refAsync('heads/master');
 
     // create a branch
     await repo.createRefAsync(`refs/heads/${branchName}`, master[0].object.sha);
 
-    // get current file contents
-    redirects = await repo.contentsAsync('static/_redirects', branchName);
-
-    // append to contents
-    const text = Buffer.from(
-        redirects[0]['content'],
-        redirects[0]['encoding'],
-    ).toString('utf8');
-
-    // check if this already exists
-    const duplicate = !! text.match(RegExp(`^/${slug}\\s`, 'm'));
-
-    // commit
-    let title = `Link Request: ${slug} -> ${url}`;
-    if (duplicate) {
-        title = '[DUPLICATE] ' + title;
-    }
-    await repo.updateContentsAsync(
-        'static/_redirects',
+    // create a new file
+    const title = `Link Request: ${slug} -> ${url}`;
+    await repo.createContentsAsync(
+        `redirects/${sanitizedSlug}`,
         title,
-        `${text}\n/${slug} ${url}`,
-        redirects[0]['sha'],
+        `/${slug}    ${url}\n`,
         branchName,
     );
 
