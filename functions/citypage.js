@@ -5,32 +5,41 @@
 var _ = require("lodash")
 var fs = require("fs")
 
-let testData = [
-    {
-    Name:"google",
-    Link:"https://google.com",
-    City: "ATL",
-    Resource: "Bail fund"
-    },
-    {
-        Name:"google2",
-        Link:"https://google2.com",
-        City: "ATL",
-        Resource: "Bail fund"
-    },
-    {
-        Name:"foo",
-        Link:"foo.com",
-        City: "NYC",
-        Resource: "Bail fund"
-        },
-        {
-            Name:"bar",
-            Link:"bar.com",
-            City: "NYC",
-            Resource: "Scanner"
-        }
-]
+const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
+
+
+const airtable = new Airtable({
+    apiKey: AIRTABLE_API_KEY,
+}).base('app46oY8u0c5ZBkce');
+
+
+async function getAllRecords(callback) {
+    const newRecords = [];
+
+    return new Promise((succeed, fail) => {
+        airtable('BLM Links').select({
+            fields: ["Name", "Link", "State", "Resource"]
+            //filterByFormula: "({PR Link} = '')"
+        }).eachPage((records, fetchNextPage) => {
+            // This function will get called for each page of records.
+            records.map(record => newRecords.push({
+                Id: record.id,
+                Name: record.fields.Name,
+                Link: record.fields.Link,
+                State: record.fields.State,
+                Resource: record.fields.Resource
+            }));
+            fetchNextPage();
+        }, function done(err) {
+            if (err) {
+                fail(err);
+            } else {
+                succeed(newRecords);
+            }
+        });
+    });
+}
+
 
 
 const writeMarkdown = (city, details) =>{
@@ -45,11 +54,23 @@ const writeMarkdown = (city, details) =>{
     fs.writeFileSync(filepath, md)
 }
 
-sorted = _.mapValues(_.groupBy(testData, "City"), cityList => cityList.map(resource => _.omit(resource, "City")))
 
-for(const city in sorted){
-    sorted[city] = _.mapValues(_.groupBy(sorted[city], "Resource"), rList => rList.map(resource => _.omit(resource, "Resource")))
-    writeMarkdown(city, sorted[city])
+async function main() {
+    const records = await getAllRecords();
+
+    sorted = _.mapValues(_.groupBy(records, "City"), cityList => cityList.map(resource => _.omit(resource, "City")))
+
+    for(const city in sorted){
+        sorted[city] = _.mapValues(_.groupBy(sorted[city], "Resource"), rList => rList.map(resource => _.omit(resource, "Resource")))
+        writeMarkdown(city, sorted[city])
+    }
 }
+
+
+main().catch(err => {
+    console.error(err);
+});
+
+
 
 
