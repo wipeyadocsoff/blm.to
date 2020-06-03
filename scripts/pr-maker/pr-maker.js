@@ -65,7 +65,7 @@ async function makePr(slug, url) {
     const sanitizedBranch = slug.replace(/[^-a-z0-9_]/i, '-');
     const branchName = `${sanitizedBranch}_${Date.now()}`;
 
-    const repo = github.repo('illegalprime/blm.to');
+    const repo = github.repo('wipeyadocsoff/blm.to');
     const master = await repo.refAsync('heads/master');
 
     // create a branch
@@ -103,7 +103,7 @@ async function makePr(slug, url) {
 
 
 async function main() {
-    records = await getNewRecords();
+    const records = await getNewRecords();
 
     for (const record of records) {
         try {
