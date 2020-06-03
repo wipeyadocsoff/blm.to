@@ -18,7 +18,7 @@ async function getNewRecords(callback) {
 
     return new Promise((succeed, fail) => {
         airtable('BLM Links').select({
-            fields: ["Name", "Link", "City", "Resource"],
+            fields: ["Name", "Link", "State", "Resource"],
             filterByFormula: "({PR Link} = '')"
         }).eachPage((records, fetchNextPage) => {
             // This function will get called for each page of records.
@@ -26,7 +26,7 @@ async function getNewRecords(callback) {
                 Id: record.id,
                 Name: record.fields.Name,
                 Link: record.fields.Link,
-                City: record.fields.City,
+                State: record.fields.State,
                 Resource: record.fields.Resource
             }));
             fetchNextPage();
