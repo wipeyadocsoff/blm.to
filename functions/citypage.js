@@ -34,23 +34,22 @@ let testData = [
 
 
 const writeMarkdown = (city, details) =>{
-    const filepath = `../src/markdown/${city.toLowerCase()}.md`
+    const filepath = `./src/markdown/${city.toLowerCase()}.md`
     var md = 
-        `---
-        slug: /${city.toLowerCase()}
-        title: `
-
+    `---\nslug: /${city.toLowerCase()}\ntitle: ${city}\n---\n`
+    for(const type in details){
+        md = md.concat(`###${type}\n`)
+        details[type].map(res => md = md.concat(`-[${res.Name}](${res.Link})\n`))
+    }
+    
     fs.writeFileSync(filepath, md)
 }
 
 sorted = _.mapValues(_.groupBy(testData, "City"), cityList => cityList.map(resource => _.omit(resource, "City")))
 
 for(const city in sorted){
-    console.log(sorted[city])
     sorted[city] = _.mapValues(_.groupBy(sorted[city], "Resource"), rList => rList.map(resource => _.omit(resource, "Resource")))
-
     writeMarkdown(city, sorted[city])
-
 }
 
 
