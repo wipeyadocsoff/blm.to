@@ -89,7 +89,11 @@ async function makePr(record) {
     // create a new file
     const dupeTag = existing ? '[DUPLICATE] ' : '';
     const title = `${dupeTag}Link Request: ${slug} -> ${url}`;
-    const content = YAML.stringify(record);
+    const content = YAML.stringify({
+        ...record,
+        Name: slug,
+        Link: url,
+    });
     if (existing) {
         await repo.updateContentsAsync(
             filename, title, content, existing[0]['sha'], branchName);

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
-find redirects -type f -exec cat {} \; > static/_redirects
+node scripts/build-redirects.js
 
 gatsby build
