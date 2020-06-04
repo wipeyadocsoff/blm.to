@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d870b73c-43b8-4f8f-b609-869b75980b8b/deploy-status)](https://app.netlify.com/sites/zen-jones-3e750c/deploys)
+
 # blm.to
 
 Link shortner/directory for protest information. 
@@ -34,3 +36,7 @@ date: "06-01-2020"
 ---
 # NYC Resources
 ```
+              
+<a href="https://www.netlify.com">
+  <img src="https://www.netlify.com/img/global/badges/netlify-dark.svg" alt="Deploys by Netlify" />
+</a>
