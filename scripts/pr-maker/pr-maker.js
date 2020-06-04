@@ -1,6 +1,7 @@
 const process = require('process');
 const octonode = require('octonode');
 const Airtable = require('airtable');
+const YAML = require('yaml');
 
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
 const GITHUB_API_KEY = process.env.GITHUB_API_KEY;
@@ -61,9 +62,11 @@ async function addPrToRecord(recordID, prLink) {
 }
 
 
-async function makePr(rawSlug, url) {
+async function makePr(record) {
     // unique-ish branch name
-    const slug = rawSlug.replace(/[^-a-z0-9]+/ig, '-');
+    const {Name, Link} = record;
+    const url = Link.trim();
+    const slug = Name.trim().replace(/[^-a-z0-9]+/ig, '-');
     const branchName = `link_req_${slug}_${Date.now()}`;
 
     const repo = github.repo(`${PR_USERNAME}/blm.to`);
@@ -73,7 +76,7 @@ async function makePr(rawSlug, url) {
     await repo.createRefAsync(`refs/heads/${branchName}`, master[0].object.sha);
 
     // check if it exists already
-    const filename = `redirects/${slug}`;
+    const filename = `redirects/${slug}.yaml`;
     let existing = null;
     try {
         existing = await repo.contentsAsync(filename, branchName);
@@ -86,7 +89,11 @@ async function makePr(rawSlug, url) {
     // create a new file
     const dupeTag = existing ? '[DUPLICATE] ' : '';
     const title = `${dupeTag}Link Request: ${slug} -> ${url}`;
-    const content = `/${slug}    ${url}\n`;
+    const content = YAML.stringify({
+        ...record,
+        Name: slug,
+        Link: url,
+    });
     if (existing) {
         await repo.updateContentsAsync(
             filename, title, content, existing[0]['sha'], branchName);
@@ -117,7 +124,7 @@ async function main() {
         try {
             const {Id, Name, Link} = record;
             console.log(`Generating Request: ${Name} -> ${Link}`);
-            const pr = await makePr(Name, Link);
+            const pr = await makePr(record);
             await addPrToRecord(Id, pr[0]['html_url']);
         }
         catch (err) {
