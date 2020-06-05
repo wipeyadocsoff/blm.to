@@ -16,7 +16,6 @@ const getRecords = async () => {
                 let data = yaml.safeLoad(fileContents)
                 records.push(data)
                 if (idx === filenames.length -1){
-                    console.log(records)
                     resolveRecords(records)
                     return
                 }
