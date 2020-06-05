@@ -31,8 +31,9 @@ const writeMarkdown = (state, details) =>{
     const filepath = `./src/markdown/${state.toLowerCase()}.md`
     var md = 
     `---\nslug: /${state.toLowerCase()}\ntitle: ${state}\n---\n`
-    for(const type in details){
-        md = md.concat(`###${type}\n`)
+    for(let type in details){
+        const typeTitle = (type == 'null') ? 'misc': type
+        md = md.concat(`###${typeTitle}\n`)
         details[type].map(res => md = md.concat(`- [${res.Name}](${res.Link})\n`))
     }
     
