@@ -1,6 +1,6 @@
 //take in list of objects
-//for each object sort by city and then type
-// [{name, url, city, type},...] >> [{city:[type:[{name, url}]]}]
+//for each object sort by state and then type
+// [{name, url, state, type},...] >> [{state:[type:[{name, url}]]}]
 
 var _ = require("lodash")
 var fs = require("fs")
@@ -24,13 +24,13 @@ const getRecords = async () => {
     })
 }
 
-const writeMarkdown = (city, details) =>{
-    if(city == 'null'){
-        city = 'misc'
+const writeMarkdown = (state, details) =>{
+    if(state == 'null'){
+        state = 'misc'
     }
-    const filepath = `./src/markdown/${city.toLowerCase()}.md`
+    const filepath = `./src/markdown/${state.toLowerCase()}.md`
     var md = 
-    `---\nslug: /${city.toLowerCase()}\ntitle: ${city}\n---\n`
+    `---\nslug: /${state.toLowerCase()}\ntitle: ${state}\n---\n`
     for(const type in details){
         md = md.concat(`###${type}\n`)
         details[type].map(res => md = md.concat(`- [${res.Name}](${res.Link})\n`))
@@ -43,11 +43,11 @@ const writeMarkdown = (city, details) =>{
 async function main() {
     try{
         const records = await getRecords()
-        sorted = _.mapValues(_.groupBy(records, "State"), cityList => cityList.map(resource => _.omit(resource, "State")))
+        sorted = _.mapValues(_.groupBy(records, "State"), stateList => stateList.map(resource => _.omit(resource, "State")))
 
-        for(const city in sorted){
-            sorted[city] = _.mapValues(_.groupBy(sorted[city], "Resource"), rList => rList.map(resource => _.omit(resource, "Resource")))
-            writeMarkdown(city, sorted[city])
+        for(const state in sorted){
+            sorted[state] = _.mapValues(_.groupBy(sorted[state], "Resource"), rList => rList.map(resource => _.omit(resource, "Resource")))
+            writeMarkdown(state, sorted[state])
         }
     } catch (e){
         console.error(e)
