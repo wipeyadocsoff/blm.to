@@ -36,7 +36,7 @@
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
-    "city": "node ./functions/citypage.js"
+    "state": "node ./functions/statepage.js"
   },
   "repository": {
     "type": "git",
