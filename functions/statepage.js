@@ -34,7 +34,7 @@ const writeMarkdown = (city, details) =>{
     `---\nslug: /${city.toLowerCase()}\ntitle: ${city}\n---\n`
     for(const type in details){
         md = md.concat(`###${type}\n`)
-        details[type].map(res => md = md.concat(`-[${res.Name}](${res.Link})\n`))
+        details[type].map(res => md = md.concat(`- [${res.Name}](${res.Link})\n`))
     }
     
     fs.writeFileSync(filepath, md)
