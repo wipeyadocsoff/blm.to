@@ -26,6 +26,9 @@ const getRecords = async () => {
 }
 
 const writeMarkdown = (city, details) =>{
+    if(city == 'null'){
+        city = 'misc'
+    }
     const filepath = `./src/markdown/${city.toLowerCase()}.md`
     var md = 
     `---\nslug: /${city.toLowerCase()}\ntitle: ${city}\n---\n`
