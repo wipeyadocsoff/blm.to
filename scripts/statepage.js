@@ -35,6 +35,7 @@ const writeMarkdown = (state, details) =>{
         const typeTitle = (type == 'null') ? 'misc': type
         md = md.concat(`###${typeTitle}\n`)
         details[type].map(res => md = md.concat(`- [${res.Name}](${res.Link})\n`))
+        md =md.concat('\n')
     }
     
     fs.writeFileSync(filepath, md)
