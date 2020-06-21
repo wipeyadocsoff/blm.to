@@ -1,0 +1,98 @@
+.light-grey {
+  color: #ffffff;
+}
+body {
+  background-color: #1a1a1a;
+}
+img {
+  width: 40rem;
+  height: auto;
+}
+#blm-title {
+  font-family: montserrat;
+  font-weight: 700;
+  font-size: 8rem;
+}
+pre, #blm-title {
+  white-space: pre-line;
+}
+#yellow-rect {
+  width: 6.5rem;
+  height: 1.2rem;
+  background-color: #ffcc00;
+  margin-top: 2rem;
+  max-height: none;
+  position: relative;
+  z-index: 2;
+}
+.dark-section {
+  height: 37rem;
+  z-index: 2;
+  width: 68rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+#blm-logo {
+  position: absolute;
+  z-index: 1;
+  width: 28rem;
+  margin-top: -0.5rem;
+  margin-left: 32rem;
+}
+#subtitle {
+  position: relative;
+  z-index: 2;
+}
+.landing-container {
+  background: #1a1a1a;
+}
+
+#blm-container {
+  margin: 1.9rem 0rem 1.6rem 0rem;
+  z-index: 2;
+  position: relative;
+}
+
+#blm-svg {
+  width: 35rem;
+}
+
+/* MOBILE STYLING */
+@media (max-width: 768px) {
+.landing-container {
+	overflow: hidden;
+	height: 100vh;
+}
+  #blm-svg {
+    width: 85vw;
+  }
+	a.btn-primary {
+		font-size: calc(.3rem + 2vw);
+		margin-top: 0rem;
+		margin-bottom: 3rem;
+		margin-right: 2rem;
+		position: absolute;
+		bottom: 0;
+	}
+	.dark-section {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		overflow-x: hidden;
+	}
+	#blm-logo {
+		margin-left: 0rem;
+		margin-top: -2vh;
+		margin-right: -3.5rem;
+		right: 0px;
+		width: 25rem;
+		overflow-x: hidden;
+	}
+	#yellow-rect {
+		width: 15vw;
+		height: 3vw;
+	}
+	#subtitle {
+		font-size: calc(.4rem + 2vw);
+	}
+}
